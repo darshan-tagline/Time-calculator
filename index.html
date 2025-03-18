@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Time Calculator</title>
+
+    <title>Time Add Calculator</title>
     <style>
-      /* Basic reset for margins and padding */
       * {
         margin: 0;
         padding: 0;
@@ -76,6 +76,12 @@
         font-size: 18px;
         color: #333;
       }
+
+      .error {
+        color: red;
+        font-size: 14px;
+        margin-top: 10px;
+      }
     </style>
   </head>
   <body>
@@ -90,6 +96,7 @@
           min="1"
           max="12"
           required
+          oninput="validateInput()"
         />
 
         <label for="minutes">Minutes (0-59):</label>
@@ -100,9 +107,13 @@
           min="0"
           max="59"
           required
+          oninput="validateInput()"
         />
 
-        <button type="button" onclick="addTime()">Click</button>
+        <button type="button" onclick="addTime()" id="addButton" disabled>
+          Click
+        </button>
+        <span id="error" class="error"></span>
       </form>
 
       <div class="result">
@@ -111,39 +122,55 @@
     </div>
 
     <script>
+      function validateInput() {
+        const hours = document.getElementById("hours").value;
+        const minutes = document.getElementById("minutes").value;
+        const button = document.getElementById("addButton");
+        const error = document.getElementById("error");
+
+        if (
+          hours &&
+          minutes &&
+          hours >= 1 &&
+          hours <= 12 &&
+          minutes >= 0 &&
+          minutes <= 59
+        ) {
+          button.disabled = false;
+          error.textContent = "";
+        } else {
+          button.disabled = true;
+          error.textContent =
+            "Please enter valid hours (1-12) and minutes (0-59).";
+        }
+      }
+
       function addTime() {
         const hours = parseInt(document.getElementById("hours").value);
         const minutes = parseInt(document.getElementById("minutes").value);
 
-        // Convert 12-hour format to 24-hour format for calculation
         let totalHours = hours;
         let totalMinutes = minutes;
 
-        // Adding 9 hours and 30 minutes
         totalHours += 9;
         totalMinutes += 30;
 
-        // Adjusting minutes if it exceeds 60
         if (totalMinutes >= 60) {
           totalMinutes -= 60;
           totalHours += 1;
         }
 
-        // Adjusting hours if it exceeds 24
         if (totalHours >= 24) {
           totalHours -= 24;
         }
 
-        // Convert back to 12-hour format and determine AM/PM
         let newPeriod = totalHours >= 12 ? "PM" : "AM";
         let newHours = totalHours % 12;
-        newHours = newHours === 0 ? 12 : newHours; // Fix 12:00 PM for midnight and noon
+        newHours = newHours === 0 ? 12 : newHours;
         let newMinutes = totalMinutes;
 
-        // Format minutes with leading zero if necessary
         newMinutes = newMinutes < 10 ? "0" + newMinutes : newMinutes;
 
-        // Displaying result
         const result = `${newHours}:${newMinutes} ${newPeriod}`;
         document.getElementById("resultTime").textContent = result;
       }
