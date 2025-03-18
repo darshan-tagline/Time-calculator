@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Time Add Calculator</title>
+    <style>
+      /* Basic reset for margins and padding */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f0f8ff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+
+      .container {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+      }
+
+      h2 {
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        text-align: left;
+        font-size: 14px;
+        color: #555;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0 15px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+
+      button {
+        background-color: #4caf50;
+        color: white;
+        padding: 12px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      .result {
+        margin-top: 20px;
+        font-weight: bold;
+        font-size: 18px;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Enter Time of Arrival</h2>
+      <form id="timeForm">
+        <label for="hours">Hour (1-12):</label>
+        <input
+          type="number"
+          id="hours"
+          name="hours"
+          min="1"
+          max="12"
+          required
+        />
+
+        <label for="minutes">Minutes (0-59):</label>
+        <input
+          type="number"
+          id="minutes"
+          name="minutes"
+          min="0"
+          max="59"
+          required
+        />
+
+        <button type="button" onclick="addTime()">Click</button>
+      </form>
+
+      <div class="result">
+        <p>New Time: <span id="resultTime"></span></p>
+      </div>
+    </div>
+
+    <script>
+      function addTime() {
+        const hours = parseInt(document.getElementById("hours").value);
+        const minutes = parseInt(document.getElementById("minutes").value);
+
+        // Convert 12-hour format to 24-hour format for calculation
+        let totalHours = hours;
+        let totalMinutes = minutes;
+
+        // Adding 9 hours and 30 minutes
+        totalHours += 9;
+        totalMinutes += 30;
+
+        // Adjusting minutes if it exceeds 60
+        if (totalMinutes >= 60) {
+          totalMinutes -= 60;
+          totalHours += 1;
+        }
+
+        // Adjusting hours if it exceeds 24
+        if (totalHours >= 24) {
+          totalHours -= 24;
+        }
+
+        // Convert back to 12-hour format and determine AM/PM
+        let newPeriod = totalHours >= 12 ? "PM" : "AM";
+        let newHours = totalHours % 12;
+        newHours = newHours === 0 ? 12 : newHours; // Fix 12:00 PM for midnight and noon
+        let newMinutes = totalMinutes;
+
+        // Format minutes with leading zero if necessary
+        newMinutes = newMinutes < 10 ? "0" + newMinutes : newMinutes;
+
+        // Displaying result
+        const result = `${newHours}:${newMinutes} ${newPeriod}`;
+        document.getElementById("resultTime").textContent = result;
+      }
+    </script>
+  </body>
+</html>
